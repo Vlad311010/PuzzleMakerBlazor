@@ -1,0 +1,79 @@
+﻿@rendermode InteractiveServer
+@inject ILogger<NavMenu> Logger
+@inject PuzzleMakerAPI PuzzleMaker
+
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <span class="navbar-brand">PuzzleMaker1.0</span>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <EditForm Model="Model" OnValidSubmit="Submit" FormName="generation-parameters-form">
+                <DataAnnotationsValidator />
+                <p class="navbar-nav">
+                        <label for="Seed" class="nav-link active">
+                            <button class="btn btn-outline-secondary btn me-2" style="width:130px">Show Original</button>
+                        </label>
+
+                        <span class="d-flex" style="width:15%">
+                            <label for="Seed" class="nav-link active">
+                                <input autocomplete="off" class="form-control-sm w-50 me-2" placeholder="Seed" id="Seed"/>
+                                <button autocomplete="off" class="btn btn-outline-warning">Reset</button> 
+                            </label>
+                        </span>
+
+                        <span class="d-flex" style="width:20%">
+                            <label for="sizeR" class="nav-link active">
+                                Puzzle Size:
+                                <InputNumber TValue="int?" EnableMinMax="true" Min="2" id="sizeR" @bind-Value="Model!.Rows" autocomplete="off" class="form-control-sm w-25" placeholder="R" />
+                                ×
+                                <InputNumber TValue="int?" EnableMinMax="true" Min="2" @bind-Value="Model!.Columns" autocomplete="off" class="form-control-sm w-25" placeholder="C" />
+                            </label>
+                        </span>
+
+                        <span class="d-flex" style="width:20%">
+                            <label for="Resize" class="nav-link active">
+                                Scale:
+                                <InputNumber TValue="float" step="0.05" EnableMinMax="true" Min="0" Max="1" autocomplete="off" @bind-Value="Model!.Scale" id="Resize" class="form-control-sm w-50 me-1" placeholder="0-1" />
+                            </label>
+                        </span>
+
+                        <span class="d-flex nav-link" style="width:35%">
+                            <label for="formFile" class="nav-link active me-2">Image:</label>
+                            <InputFile OnChange="OnImageChange" class="@GetFIleInputCss()" type="file" id="formFile" />
+                            <button class="btn btn-outline-success h-100" type="submit" style="width:37%">Create</button>
+                        </span>
+                </p>
+            </EditForm>
+        </div>
+    </div>
+</nav>
+
+@code {
+    [SupplyParameterFromForm]
+    private Models.PuzzleGenerationParameters? Model { get; set; }
+
+    protected override void OnInitialized() 
+    {
+        Model ??= new();
+    }
+
+    private async void Submit()
+    {
+        // Logger.LogInformation("Rows = {0}", Model?.Rows);
+        // var (pieceImagesBase64, puzzleDataRaw) = await PuzzleMaker.CreatePuzzle(Model!);
+    }
+
+
+    private void OnImageChange(InputFileChangeEventArgs e)
+    {
+        Model!.Image = e.File;
+    }
+
+    private string GetFIleInputCss()
+    {
+        var fieldIdentifier = new FieldIdentifier(Model!, "Image");
+        string classes = "form-control me-2 form-control-sm";
+        return ((Models.PuzzleGenerationParameters)(fieldIdentifier.Model)).Image == null ? classes + " invalid" : classes;
+    }
+
+}

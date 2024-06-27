@@ -1,0 +1,129 @@
+﻿@rendermode InteractiveServer
+@using Microsoft.Extensions.Logging
+@using System.ComponentModel
+@inject ILogger<PuzzlePiece> _logger
+@inject IJSRuntime JS
+@inject PuzzleManager PiecesSvc
+
+<img @ref=imageTag class="Dragable @(highlight ? "PuzzlePieceBorderHighlight" : "")" draggable="false" 
+    src=@imagePath style="left:@(posX)px; top:@(posY)px; z-index:@(selected ? 10 : 0)"
+
+    @ondragstart:preventDefault
+
+    @onmousedown="OnMouseDown"
+    @onmousemove="OnMouseMove"
+    @onmouseup="OnMouseUp"
+    @onmouseout="OnMouseOut"
+/>
+
+
+@code {
+
+    [Parameter, EditorRequired]
+    public int indexRow { get; set; } = -1;
+    [Parameter, EditorRequired]
+    public int indexColumn { get; set; } = -1;
+
+    [Parameter, EditorRequired]
+    public string imagePath { get; set; } = "";
+
+
+    private ElementReference imageTag;
+    private PieceIndex index = new ValueTuple<int, int>(-1, -1);
+
+    // state
+    private int posX = 0;
+    private int posY = 0;
+    private int clickOffsetX = 0;
+    private int clickOffsetY = 0;
+    private bool highlight = false;
+    private bool selected = false;
+
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        index = new ValueTuple<int, int>(indexRow, indexColumn);
+        posX = PiecesSvc.GetPiece(index).Position.x;
+        posY = PiecesSvc.GetPiece(index).Position.y;
+    }
+
+    protected override void OnInitialized()
+    {
+        Models.PuzzlePiece puzzlePiece = PiecesSvc.GetPiece(new ValueTuple<int, int>(indexRow, indexColumn));
+        puzzlePiece.PropertyChanged += ModelOnPositionChange;
+    }
+
+    private void ModelOnPositionChange(object? sender, PropertyChangedEventArgs e)
+    {
+        posX = PiecesSvc.GetPiece(index).Position.x;
+        posY = PiecesSvc.GetPiece(index).Position.y;
+        InvokeAsync(StateHasChanged);
+    }
+
+
+    public async Task OnMouseDown(MouseEventArgs e)
+    {
+        if (!FilterInput(e))
+            return;
+
+        await JS.InvokeVoidAsync("console.log", "Mouse Down");
+
+        var result = await JS.InvokeAsync<Models.BoundingClientRect>("MyDOMGetBoundingClientRect", imageTag);
+        clickOffsetX = (int)(e.ClientX - result.Left);
+        clickOffsetY = (int)(e.ClientY - result.Top);
+        SetSelect(true);
+    }
+
+
+    public async Task OnMouseMove(MouseEventArgs e)
+    {
+        if (!selected)
+            return;
+
+        // await JS.InvokeVoidAsync("console.log", "Mouse Move " + e.ClientX + " " + e.ClientY);
+
+
+        // PiecesSvc.GetPiece(index).SetPosition((int)(e.ClientX) - clickOffsetX, (int)(e.ClientY) - clickOffsetY);
+
+        highlight = PiecesSvc.CanBeConnected(index);
+
+        SetPosition((int)(e.ClientX) - clickOffsetX, (int)(e.ClientY) - clickOffsetY);
+
+    }
+
+    public async Task OnMouseUp(MouseEventArgs e)
+    {
+        if (!FilterInput(e))
+            return;
+
+        SetSelect(false);
+
+        // await JS.InvokeVoidAsync("console.log", "Connect 0_0 <-> 0_1 " + PiecesSvc.CanBeConnected(new ValueTuple<int, int>(0, 0), new ValueTuple<int, int>(0, 1)));
+        PiecesSvc.OnPieceDown(index);
+    }
+
+    public async Task OnMouseOut(MouseEventArgs e)
+    {
+        SetSelect(false);
+    }
+
+    private void SetSelect(bool select)
+    {
+        selected = select;
+        if (!select)
+            highlight = false;
+    }
+
+
+    private void SetPosition(int x, int y)
+    {
+        PiecesSvc.SetPiecePosition(index, x, y);
+    }
+
+    private bool FilterInput(MouseEventArgs e)
+    {
+        return e.Button == 0L;
+    }
+
+}

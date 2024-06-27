@@ -1,0 +1,25 @@
+﻿@rendermode InteractiveServer
+@page "/"
+@using Models
+@inject PuzzleManager PiecesSvc
+
+<PageTitle>Index</PageTitle>
+
+<div class="PuzzleWindow bg-dark bg-gradient border-gradient" 
+           style="width: @((int)(PiecesSvc.Columns * (PiecesSvc.PieceWidth + PiecesSvc.Margin) * scaleW))px;
+           height: @((int)(PiecesSvc.Rows * (PiecesSvc.PieceHeight + PiecesSvc.Margin) * scaleH))px;
+            ">
+@for (int r = 0; r < PiecesSvc.Rows; r++)
+{
+    @for (int c = 0; c < PiecesSvc.Columns; c++)
+    {
+        Models.PuzzlePiece piece = PiecesSvc.Pieces[c, r];
+        <PuzzlePiece indexColumn="@piece.Index.column" indexRow="@piece.Index.row" imagePath="@(piece.ImagePath)" />
+    }
+}
+</div>
+
+@code{
+    const float scaleW = 1.7f;
+    const float scaleH = 2f;
+}
