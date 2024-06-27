@@ -70,10 +70,10 @@ namespace PuzzleMakerBlazor.Models
             this.pieces = pieces;
         }
 
-        public JointData GetJoint(PieceIndex from, PieceIndex to)
+        /*public JointData GetJoint(PieceIndex from, PieceIndex to)
         {
             return pieces[from.column, from.row].joints.Where(j => j.connectTo.Equals(to)).Single();
-        }
+        }*/
 
     }
 }

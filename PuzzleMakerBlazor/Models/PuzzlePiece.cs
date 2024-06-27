@@ -1,30 +1,35 @@
 ﻿using System.ComponentModel;
+using static PuzzleMakerBlazor.Models.PuzzleData;
 
 namespace PuzzleMakerBlazor.Models
 {
     public class PuzzlePiece : INotifyPropertyChanged
     {
-        public string ImagePath { get; set; } = "";
+        public string Image { get; set; } = "";
         public PieceIndex Index { get; } = new ValueTuple<int, int>(-1, -1);
-        
+        public List<JointData> Joints { get; }
+
         public Point Position { get => position; set => position = startPosition; }
         private Point position;
         private Point startPosition;
 
         public PuzzlePiece()
         {
-            ImagePath = "";
+            Image = "";
             Index = new ValueTuple<int, int>(-1, -1);
             position = new ValueTuple<int, int>(0, 0);
             startPosition = new ValueTuple<int, int>(0, 0);
+            Joints = new List<JointData>();
         }
 
-        public PuzzlePiece(string path, int rIdx, int cIdx, int startX, int startY) 
+        public PuzzlePiece(string imageBase64, int rIdx, int cIdx, int startX, int startY, List<JointData> joints) 
         {
-            ImagePath = path;
+            Image = imageBase64;
             Index = new ValueTuple<int, int>(rIdx, cIdx);
             position = new ValueTuple<int, int>(startX, startY);
             startPosition = new ValueTuple<int, int>(startX, startY);
+            Joints = joints;
+            OnPropertyChanged(nameof(position));
         }
 
         public void SetPosition(int x, int y)

@@ -7,7 +7,7 @@ namespace PuzzleMakerBlazor.Models
     {
         [Required] public int? Rows { get; set; }
         [Required] public int? Columns { get; set; }
-        public float Scale { get; set; } = 1f;
+        public float Scale { get; set; } = 0.1f;
         [Required] public IBrowserFile? Image { get; set; }
     }
 }

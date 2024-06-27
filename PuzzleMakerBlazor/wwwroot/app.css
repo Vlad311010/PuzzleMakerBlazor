@@ -51,10 +51,11 @@ h1:focus {
 }
 
 .Dragable {
-    display:inline;
+    display: inline;
     position: absolute;
     will-change: transform;
     cursor: default !important;
+    pointer-events: visible;
 }
 
     .Dragable:active {
@@ -66,7 +67,7 @@ h1:focus {
 }
 
 .PuzzlePieceBorderHighlight {
-    filter: drop-shadow(2 px 2px rgb(43, 196, 43)) drop-shadow(-2px -2px rgb(43, 196, 43));
+    filter: drop-shadow(2px 2px rgb(43, 196, 43)) drop-shadow(-2px -2px rgb(43, 196, 43));
 }
 
 .Focused {
@@ -87,6 +88,7 @@ h1:focus {
     text-align: justify;
     min-height: 100%;
     min-width: 100%;
+    
 }
 
 .PuzzleMock {
@@ -110,3 +112,6 @@ h1:focus {
     outline: none;
 }
 
+html {
+    background-color: #212529;
+}

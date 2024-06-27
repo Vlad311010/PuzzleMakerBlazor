@@ -5,18 +5,21 @@ using System.Text;
 
 namespace PuzzleMakerBlazor.Services
 {
-    public class PuzzleMakerAPI
+    public static class PuzzleMakerAPI
     {
-        private readonly HttpClient httpClient;
+        private static HttpClient httpClient;
 
-        public PuzzleMakerAPI()
+        private static void Init()
         {
             httpClient = new HttpClient { BaseAddress = new Uri("http://localhost:5000") };
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("multipart/form-data"));
         }
 
-        public async Task<Tuple<Dictionary<string, string>, string>> CreatePuzzle(Models.PuzzleGenerationParameters puzzleParameters)
+        public static async Task<Tuple<Dictionary<string, string>, string>> CreatePuzzle(Models.PuzzleGenerationParameters puzzleParameters)
         {
+            if (httpClient == null) 
+                Init();
+
             using (var form = new MultipartFormDataContent())
             {
                 string fileExtension = Path.GetExtension(puzzleParameters.Image!.Name);
@@ -47,7 +50,7 @@ namespace PuzzleMakerBlazor.Services
             }
         }
 
-        private async Task<Tuple<Dictionary<string, string>, string>> ProcessZip(Stream zipStream)
+        private static async Task<Tuple<Dictionary<string, string>, string>> ProcessZip(Stream zipStream)
         {
             using var zip = new ZipArchive(zipStream, ZipArchiveMode.Read);
             // List<string> imagesBase64 = new List<string>();
@@ -65,7 +68,7 @@ namespace PuzzleMakerBlazor.Services
                     }
                     else
                     {
-                        imagesBase64.Add(file.Name, Convert.ToBase64String(fileBytes));
+                        imagesBase64.Add(file.Name.Split('.')[0], Convert.ToBase64String(fileBytes));
                         // imagesBase64.Add(Convert.ToBase64String(fileBytes));
                     }
                 }

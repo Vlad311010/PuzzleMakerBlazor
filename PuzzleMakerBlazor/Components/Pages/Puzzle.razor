@@ -1,25 +1,52 @@
 ﻿@rendermode InteractiveServer
 @page "/"
 @using Models
-@inject PuzzleManager PiecesSvc
+@using System.ComponentModel
+@inject PuzzleDataManager PuzzleDataManager
 
 <PageTitle>Index</PageTitle>
 
-<div class="PuzzleWindow bg-dark bg-gradient border-gradient" 
-           style="width: @((int)(PiecesSvc.Columns * (PiecesSvc.PieceWidth + PiecesSvc.Margin) * scaleW))px;
-           height: @((int)(PiecesSvc.Rows * (PiecesSvc.PieceHeight + PiecesSvc.Margin) * scaleH))px;
+<div class="PuzzleWindow bg-dark bg-gradient border-gradient"
+     style="width: @(width)px;
+           height: @(height)px;
             ">
-@for (int r = 0; r < PiecesSvc.Rows; r++)
+@for (int r = 0; r < PuzzleDataManager.DataProvider.Rows; r++)
 {
-    @for (int c = 0; c < PiecesSvc.Columns; c++)
+    @for (int c = 0; c < PuzzleDataManager.DataProvider.Columns; c++)
     {
-        Models.PuzzlePiece piece = PiecesSvc.Pieces[c, r];
-        <PuzzlePiece indexColumn="@piece.Index.column" indexRow="@piece.Index.row" imagePath="@(piece.ImagePath)" />
+        Models.PuzzlePiece piece = controller.GetPiece(r, c);
+        <PuzzlePiece @key="piece" PuzzleController="@controller" indexColumn="@piece.Index.column" indexRow="@piece.Index.row" imagePath="@(piece.Image)" />
     }
 }
 </div>
 
 @code{
-    const float scaleW = 1.7f;
-    const float scaleH = 2f;
+    int width;
+    int height;
+    PuzzleController controller;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        const float scaleW = 1.7f;
+        const float scaleH = 2f;
+
+        // width = ((PuzzleDataManager.DataProvider.Columns + 1) * (int)((PuzzleDataManager.DataProvider.PieceWidth + PuzzleDataManager.DataProvider.Margin) * scaleW));
+        // height = ((PuzzleDataManager.DataProvider.Rows + 1) * (int)((PuzzleDataManager.DataProvider.PieceHeight + PuzzleDataManager.DataProvider.Margin) * scaleH));
+        controller = new PuzzleController(PuzzleDataManager.DataProvider);
+        
+        // width = controller.GetPiece(PuzzleDataManager.DataProvider.Rows - 1, PuzzleDataManager.DataProvider.Columns - 1).Position.x + ((int)PuzzleDataManager.DataProvider.PieceWidth + PuzzleDataManager.DataProvider.Margin);
+        // height = controller.GetPiece(PuzzleDataManager.DataProvider.Rows - 1, PuzzleDataManager.DataProvider.Columns - 1).Position.y + ((int)PuzzleDataManager.DataProvider.PieceHeight + PuzzleDataManager.DataProvider.Margin);
+
+
+        PuzzleDataManager.onDataProviderChange += OnPuzzleDataProviderChange;
+    }
+
+    private async void OnPuzzleDataProviderChange()
+    {
+        controller.SwitchDataPovider(PuzzleDataManager.DataProvider);
+        (width, height) = controller.GetPuzzleBoardSize();
+        await InvokeAsync(StateHasChanged);
+    }
 }

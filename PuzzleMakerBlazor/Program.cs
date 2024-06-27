@@ -8,14 +8,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
-builder.Services.AddSingleton<PuzzleManager>();
-/*builder.Services.AddScoped(sp =>
-    new HttpClient
-    {
-        BaseAddress = new Uri("http://localhost:5000")
-    });
-*/
-builder.Services.AddScoped(sp => new PuzzleMakerAPI());
+builder.Services.AddSingleton<PuzzleDataManager>();
 
 var app = builder.Build();
 

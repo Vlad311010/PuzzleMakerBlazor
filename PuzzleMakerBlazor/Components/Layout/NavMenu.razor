@@ -1,6 +1,6 @@
 ﻿@rendermode InteractiveServer
 @inject ILogger<NavMenu> Logger
-@inject PuzzleMakerAPI PuzzleMaker
+@inject PuzzleDataManager PuzzleManager
 
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -59,8 +59,8 @@
 
     private async void Submit()
     {
+        await PuzzleManager.SwitchPuzzleDataProvider(Model!, PuzzleDataProviderAPI.CreatePuzzleDataProvider);
         // Logger.LogInformation("Rows = {0}", Model?.Rows);
-        // var (pieceImagesBase64, puzzleDataRaw) = await PuzzleMaker.CreatePuzzle(Model!);
     }
 
 
