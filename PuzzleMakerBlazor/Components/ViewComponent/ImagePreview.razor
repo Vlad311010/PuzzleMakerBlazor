@@ -1,5 +1,41 @@
-﻿<h3>ImagePreview</h3>
+﻿
+<Draggable startX="@(lastPositionX)" startY="@(lastPositionY)" OnDragEndCallback="OnDragEnd" zIndexMin="@(100)" zIndexMax="@(100)">
+    <img draggable="false" class="ImagePreview @(string.IsNullOrEmpty(imageBase64) ? "Hidden" : "")" src=@("data:image/png;base64," + imageBase64)>
+</Draggable>
 
 @code {
+    [Parameter]
+    public IBrowserFile? imageSrc { get; set; }
+
+    private string imageBase64 = String.Empty;
+    private int lastPositionX;
+    private int lastPositionY;
+
+    /*protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }*/
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (imageSrc == null) return;
+
+        ByteArrayContent imageContent;
+        using (MemoryStream ms = new MemoryStream())
+        {
+            await imageSrc.OpenReadStream(maxAllowedSize: 102400000).CopyToAsync(ms);
+            byte[] fileBytes = ms.ToArray();
+
+            imageContent = new ByteArrayContent(fileBytes);
+            imageBase64 = Convert.ToBase64String(fileBytes);
+        }
+    }
+
+    private void OnDragEnd(int x, int y)
+    {
+        lastPositionX = x;
+        lastPositionY = y;
+    }
+
 
 }

@@ -71,8 +71,12 @@ h1:focus {
 }
 
 .Focused {
-    position: relative;
     z-index: 10;
+}
+
+.Hidden {
+    visibility:hidden;
+    pointer-events:none;
 }
 
 .PuzzleWindow {
@@ -102,6 +106,15 @@ h1:focus {
     width: 100%;
     height: 100%;
     border-image-slice: 1;
+}
+
+
+.ImagePreview {
+    position:fixed; 
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 520px;
+    z-index: 100;
 }
 
 .border-gradient {

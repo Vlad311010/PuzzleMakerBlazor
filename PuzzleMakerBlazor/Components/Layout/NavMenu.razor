@@ -11,7 +11,12 @@
                 <DataAnnotationsValidator />
                 <p class="navbar-nav">
                         <label for="Seed" class="nav-link active">
-                            <button class="btn btn-outline-secondary btn me-2" style="width:130px">Show Original</button>
+                        <span @onclick="OnShowOriginalClick"
+                              class="btn btn-outline-secondary btn me-2 @GetCssForShowOriginalBtn()"
+                              style="width:130px"
+                        >
+                            Show Original
+                        </span>
                         </label>
 
                         <span class="d-flex" style="width:15%">
@@ -48,9 +53,15 @@
     </div>
 </nav>
 
+<span class="@(!showPreviewImage ? "Hidden" : "")"> 
+    <ImagePreview imageSrc="@Model!.Image" />
+</span>
+
 @code {
     [SupplyParameterFromForm]
     private Models.PuzzleGenerationParameters? Model { get; set; }
+
+    private bool showPreviewImage = false;
 
     protected override void OnInitialized() 
     {
@@ -74,6 +85,21 @@
         var fieldIdentifier = new FieldIdentifier(Model!, "Image");
         string classes = "form-control me-2 form-control-sm";
         return ((Models.PuzzleGenerationParameters)(fieldIdentifier.Model)).Image == null ? classes + " invalid" : classes;
+    }
+
+    private void OnShowOriginalClick()
+    {
+        showPreviewImage = !showPreviewImage;
+    }
+
+    private string GetCssForShowOriginalBtn()
+    {
+        if (Model!.Image == null)
+            return "disabled";
+        else if (showPreviewImage)
+            return "active";
+        else
+            return string.Empty;
     }
 
 }

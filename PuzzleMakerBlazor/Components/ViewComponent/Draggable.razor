@@ -2,7 +2,7 @@
 @using System.ComponentModel
 @inject IJSRuntime JS
 
-<span @ref=htmlTag class="Dragable" style="left:@(posX)px; top:@(posY)px; z-index:@(selected ? 10 : 0)"
+<span @ref=htmlTag class="Dragable" style="left:@(posX)px; top:@(posY)px; z-index:@(selected ? zIndexMax : zIndexMin)"
    @ondragstart:preventDefault
    @onmousedown="OnMouseDown"
    @onmousemove="OnMouseMove"
@@ -17,6 +17,11 @@
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
+
+    [Parameter]
+    public int zIndexMin { get; set; } = 0;
+    [Parameter]
+    public int zIndexMax { get; set; } = 10;
     [Parameter]
     public int startX { get; set; }
     [Parameter]
