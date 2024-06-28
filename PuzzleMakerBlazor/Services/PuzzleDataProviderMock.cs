@@ -22,6 +22,7 @@ namespace PuzzleMakerBlazor.Services
         public float PieceWidth => 0;
         public float PieceHeight => 0;
         public int Margin => 0;
+        public int Seed => 0;
         public Dictionary<string, string> PieceImages => imagesBase64;
         public PieceData GetPieceData(PieceIndex index)
         {

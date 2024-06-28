@@ -1,6 +1,7 @@
 ﻿@rendermode InteractiveServer
 @inject ILogger<NavMenu> Logger
 @inject PuzzleDataManager PuzzleManager
+@inject NavigationManager Navigation
 
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -21,8 +22,8 @@
 
                         <span class="d-flex" style="width:15%">
                             <label for="Seed" class="nav-link active">
-                                <input autocomplete="off" class="form-control-sm w-50 me-2" placeholder="Seed" id="Seed"/>
-                                <button autocomplete="off" class="btn btn-outline-warning">Reset</button> 
+                                Seed:
+                                <InputNumber TValue="int" autocomplete="off" @bind-Value="Model!.Seed" class="form-control-sm w-50 me-2" placeholder="Seed" id="Seed" />
                             </label>
                         </span>
 
@@ -45,7 +46,18 @@
                         <span class="d-flex nav-link" style="width:35%">
                             <label for="formFile" class="nav-link active me-2">Image:</label>
                             <InputFile OnChange="OnImageChange" class="@GetFIleInputCss()" type="file" id="formFile" />
-                            <button class="btn btn-outline-success h-100" type="submit" style="width:37%">Create</button>
+                            
+                            @if (canInitiateRequest) 
+                            {
+                                <button class="btn btn-outline-success h-100 me-2" type="submit" style="width:37%">Create</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-outline-success h-100 me-2 disabled" type="submit" style="width:37%">
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                </button>
+                            }
+                            <span @onclick="OnReset" autocomplete="off" class="btn btn-outline-warning">Reset</span>
                         </span>
                 </p>
             </EditForm>
@@ -62,6 +74,7 @@
     private Models.PuzzleGenerationParameters? Model { get; set; }
 
     private bool showPreviewImage = false;
+    private bool canInitiateRequest = true;
 
     protected override void OnInitialized() 
     {
@@ -70,10 +83,11 @@
 
     private async void Submit()
     {
+        canInitiateRequest = false;
         await PuzzleManager.SwitchPuzzleDataProvider(Model!, PuzzleDataProviderAPI.CreatePuzzleDataProvider);
-        // Logger.LogInformation("Rows = {0}", Model?.Rows);
+        canInitiateRequest = true;
+        await InvokeAsync(StateHasChanged);
     }
-
 
     private void OnImageChange(InputFileChangeEventArgs e)
     {
@@ -90,6 +104,11 @@
     private void OnShowOriginalClick()
     {
         showPreviewImage = !showPreviewImage;
+    }
+
+    private void OnReset()
+    {
+        Navigation.NavigateTo(Navigation.Uri, true);
     }
 
     private string GetCssForShowOriginalBtn()

@@ -53,7 +53,6 @@ h1:focus {
 .Dragable {
     display: inline;
     position: absolute;
-    will-change: transform;
     cursor: default !important;
     pointer-events: visible;
 }
@@ -110,11 +109,12 @@ h1:focus {
 
 
 .ImagePreview {
-    position:fixed; 
+    position: sticky;
     margin-left: auto;
     margin-right: auto;
     max-width: 520px;
     z-index: 100;
+    will-change: transform;
 }
 
 .border-gradient {

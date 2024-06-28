@@ -7,8 +7,9 @@ namespace PuzzleMakerBlazor.Services
 {
     public class PuzzleDataProviderAPI : IPuzzleDataProvider
     {
-        Dictionary<string, string> imagesBase64;
-        PuzzleData puzzleData;
+        private Dictionary<string, string> imagesBase64;
+        private PuzzleData puzzleData;
+        private int seed = 0;
 
         private PuzzleDataProviderAPI() { }
 
@@ -18,7 +19,7 @@ namespace PuzzleMakerBlazor.Services
             PuzzleDataProviderAPI puzzleDataProvider = new PuzzleDataProviderAPI();
             puzzleDataProvider.imagesBase64 = imageBase64;
             puzzleDataProvider.puzzleData = puzzleData;
-
+            puzzleDataProvider.seed = generationParameters.Seed;
             return puzzleDataProvider;
         }
 
@@ -38,10 +39,12 @@ namespace PuzzleMakerBlazor.Services
         public float PieceWidth => puzzleData.pieceSize.X;
         public float PieceHeight => puzzleData.pieceSize.Y;
         public int Margin => puzzleData.margin;
+        public int Seed => seed;
         public Dictionary<string, string> PieceImages => imagesBase64;
         public PieceData GetPieceData(PieceIndex index)
         {
             return puzzleData.pieces[index.column, index.row];
         }
+
     }
 }

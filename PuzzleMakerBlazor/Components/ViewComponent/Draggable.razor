@@ -2,7 +2,7 @@
 @using System.ComponentModel
 @inject IJSRuntime JS
 
-<span @ref=htmlTag class="Dragable" style="left:@(posX)px; top:@(posY)px; z-index:@(selected ? zIndexMax : zIndexMin)"
+<span @ref=htmlTag class="Dragable" style="left:@(posX)px; top:@(posY)px; z-index:@(selected ? zIndexMax : zIndexMin);"
    @ondragstart:preventDefault
    @onmousedown="OnMouseDown"
    @onmousemove="OnMouseMove"

@@ -1,5 +1,7 @@
 ﻿using PuzzleMakerBlazor.Interfaces;
 using PuzzleMakerBlazor.Models;
+using System;
+using System.Linq;
 using static PuzzleMakerBlazor.Models.PuzzleData;
 
 namespace PuzzleMakerBlazor.Services
@@ -30,19 +32,35 @@ namespace PuzzleMakerBlazor.Services
         private static PuzzlePiece[,] CreatePieces(IPuzzleDataProvider puzzleData)
         {
             PuzzlePiece[,] puzzlePieces = new PuzzlePiece[puzzleData.Columns, puzzleData.Rows];
-
-            for (int c = 0; c < puzzleData.Columns; c++)
+            PieceIndex[] shuffledIndexes = GetShuffledIdexes(puzzleData.Seed, puzzleData.Columns, puzzleData.Rows);
+            for (int r = 0; r < puzzleData.Rows; r++)
             {
-                for (int r = 0; r < puzzleData.Rows; r++)
+                for (int c = 0; c < puzzleData.Columns; c++)
                 {
                     PieceData pieceData = puzzleData.GetPieceData(new ValueTuple<int,int>(r, c));
                     string key = string.Format("{0}_{1}", r, c);
+                    PieceIndex positionIndex = shuffledIndexes[r * puzzlePieces.GetLength(0) + c];
                     puzzlePieces[c, r] = new PuzzlePiece(puzzleData.PieceImages[key], r, c, 
-                        startOffsetX + ((int)puzzleData.PieceWidth + paddingX) * c, startOffsetY + ((int)puzzleData.PieceHeight + paddingY) * r, pieceData.joints);
+                        startOffsetX + ((int)puzzleData.PieceWidth + paddingX) * positionIndex.column, 
+                        startOffsetY + ((int)puzzleData.PieceHeight + paddingY) * positionIndex.row, pieceData.joints);
                 }
             }
 
             return puzzlePieces;
+        }
+
+        private static PieceIndex[] GetShuffledIdexes(int seed, int columns, int rows)
+        {
+            Random random = new Random(seed);
+            PieceIndex[] indexes = new PieceIndex[columns * rows];
+            for (int r = 0; r < rows; r++)
+            {
+                for (int c = 0; c < columns; c++)
+                {
+                    indexes[r * columns + c] = new ValueTuple<int, int>(r, c);
+                }
+            }
+            return indexes.OrderBy(i => random.Next()).ToArray();
         }
 
         public Tuple<int, int> GetPuzzleBoardSize()

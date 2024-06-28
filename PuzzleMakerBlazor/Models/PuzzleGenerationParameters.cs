@@ -5,6 +5,7 @@ namespace PuzzleMakerBlazor.Models
 {
     public class PuzzleGenerationParameters
     {
+        [Required] public int Seed { get; set; } = 0;
         [Required] public int? Rows { get; set; }
         [Required] public int? Columns { get; set; }
         public float Scale { get; set; } = 0.1f;

@@ -1,5 +1,4 @@
-﻿using PuzzleMakerBlazor.Models;
-using static PuzzleMakerBlazor.Models.PuzzleData;
+﻿using static PuzzleMakerBlazor.Models.PuzzleData;
 
 namespace PuzzleMakerBlazor.Interfaces
 {
@@ -10,6 +9,7 @@ namespace PuzzleMakerBlazor.Interfaces
         public float PieceWidth { get; }
         public float PieceHeight { get; }
         public int Margin { get; }
+        public int Seed { get; }
         public Dictionary<string, string> PieceImages { get; }
         public PieceData GetPieceData(PieceIndex index);
     }
