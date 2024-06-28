@@ -1,54 +1,41 @@
 ﻿@rendermode InteractiveServer
 @using Microsoft.Extensions.Logging
+@using PuzzleMakerBlazor.Models
 @using System.ComponentModel
 @inject ILogger<PuzzlePiece> _logger
 @inject IJSRuntime JS
 @inject PuzzleDataManager PuzzleDataManager
 @implements IDisposable
 
-<img @ref=imageTag class="Dragable @(highlight ? "PuzzlePieceBorderHighlight" : "")" draggable="false" 
-    src=@("data:image/png;base64,"+imagePath) style="left:@(posX)px; top:@(posY)px; z-index:@(selected ? 10 : 0)"
-
-    @ondragstart:preventDefault
-
-    @onmousedown="OnMouseDown"
-    @onmousemove="OnMouseMove"
-    @onmouseup="OnMouseUp"
-    @onmouseout="OnMouseOut"
-/>
+<Draggable OnDragCallback="@OnDrag" OnDragEndCallback="@OnDragEnd" OnDragCancelCallback="@OnDragCancel" startX="posX" startY="posY">
+    <img @ref=imageTag class="@(highlight ? "PuzzlePieceBorderHighlight" : "")" draggable="false" 
+        src=@(src) 
+    />
+</Draggable>
 
 
 @code {
-
 
     [Parameter, EditorRequired]
     public int indexRow { get; set; } = -1;
     [Parameter, EditorRequired]
     public int indexColumn { get; set; } = -1;
-
     [Parameter, EditorRequired]
     public string imagePath { get; set; } = "";
     [Parameter, EditorRequired]
     public PuzzleController PuzzleController { get; set; }
+    [Parameter]
+    public bool base64Format { get; set; } = true;
 
-
-    public class Scroll
-    {
-        public double scrollX { get; set; } = 0;
-        public double scrollY { get; set; } = 0;
-    }
 
     private ElementReference imageTag;
     private PieceIndex index = new ValueTuple<int, int>(-1, -1);
+    private string src = String.Empty;
 
     // state
     private int posX = 0;
     private int posY = 0;
-    private int clickOffsetX = 0;
-    private int clickOffsetY = 0;
     private bool highlight = false;
-    private bool selected = false;
-    private Scroll scroll = new Scroll();
 
 
     protected override void OnParametersSet()
@@ -57,6 +44,7 @@
         index = new ValueTuple<int, int>(indexRow, indexColumn);
         posX = PuzzleController.GetPiece(index).Position.x;
         posY = PuzzleController.GetPiece(index).Position.y;
+        src = base64Format ? "data:image/png;base64," + imagePath : imagePath;
     }
 
     protected override void OnInitialized()
@@ -78,73 +66,26 @@
         await InvokeAsync(StateHasChanged);
     }    
 
-    public async Task OnMouseDown(MouseEventArgs e)
+    public void OnDrag(int x, int y)
     {
-        if (!FilterInput(e))
-            return;
-
-        var result = await JS.InvokeAsync<Models.BoundingClientRect>("MyDOMGetBoundingClientRect", imageTag);
-        scroll = await JS.InvokeAsync<Scroll>("GetScroll");
-        clickOffsetX = (int)(e.ClientX - result.Left);
-        clickOffsetY = (int)(e.ClientY - result.Top);
-
-        SetSelect(true);
-
-
-
-        await JS.InvokeVoidAsync("console.log", "Mouse Down " + index.row + "_" + index.column + " " + result.Top + " " + result.Left);
-    }
-
-
-    public async Task OnMouseMove(MouseEventArgs e)
-    {
-        if (!selected)
-            return;
-
-        // await JS.InvokeVoidAsync("console.log", "Mouse Move " + e.ClientX + " " + e.ClientY);
-
-
-        // PiecesSvc.GetPiece(index).SetPosition((int)(e.ClientX) - clickOffsetX, (int)(e.ClientY) - clickOffsetY);
-
         highlight = PuzzleController.CanBeConnected(index);
-
-        SetPosition((int)(e.ClientX) - clickOffsetX + (int)scroll.scrollX, (int)(e.ClientY) - clickOffsetY + (int)scroll.scrollY);
+        SetPosition(x, y);
     }
 
-    public async Task OnMouseUp(MouseEventArgs e)
+    public void OnDragEnd(int x, int y)
     {
-        if (!FilterInput(e))
-            return;
-
-        SetSelect(false);
-
-        // await JS.InvokeVoidAsync("console.log", "Connect 0_0 <-> 0_1 " + PiecesSvc.CanBeConnected(new ValueTuple<int, int>(0, 0), new ValueTuple<int, int>(0, 1)));
+        highlight = false;
         PuzzleController.OnPieceDown(index);
     }
 
-    public async Task OnMouseOut(MouseEventArgs e)
+    public void OnDragCancel(int x, int y)
     {
-        SetSelect(false);
+        highlight = false;
     }
-
-    private void SetSelect(bool select)
-    {
-        selected = select;
-        if (!select)
-            highlight = false;
-    }
-
 
     private void SetPosition(int x, int y)
     {
         PuzzleController.SetPiecePosition(index, x, y);
     }
-
-    private bool FilterInput(MouseEventArgs e)
-    {
-        return e.Button == 0L;
-    }
-
-    
 
 }

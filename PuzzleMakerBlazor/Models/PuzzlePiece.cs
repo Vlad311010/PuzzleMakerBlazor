@@ -22,9 +22,9 @@ namespace PuzzleMakerBlazor.Models
             Joints = new List<JointData>();
         }
 
-        public PuzzlePiece(string imageBase64, int rIdx, int cIdx, int startX, int startY, List<JointData> joints) 
+        public PuzzlePiece(string image, int rIdx, int cIdx, int startX, int startY, List<JointData> joints) 
         {
-            Image = imageBase64;
+            Image = image;
             Index = new ValueTuple<int, int>(rIdx, cIdx);
             position = new ValueTuple<int, int>(startX, startY);
             startPosition = new ValueTuple<int, int>(startX, startY);

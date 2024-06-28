@@ -34,7 +34,7 @@ namespace PuzzleMakerBlazor.Services
         }
 
         public int Rows => puzzleData.puzzleSize.Rows;
-        public int Columns => puzzleData.puzzleSize.Rows;
+        public int Columns => puzzleData.puzzleSize.Columns;
         public float PieceWidth => puzzleData.pieceSize.X;
         public float PieceHeight => puzzleData.pieceSize.Y;
         public int Margin => puzzleData.margin;

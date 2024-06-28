@@ -1,0 +1,94 @@
+﻿@using PuzzleMakerBlazor.Models
+@using System.ComponentModel
+@inject IJSRuntime JS
+
+<span @ref=htmlTag class="Dragable" style="left:@(posX)px; top:@(posY)px; z-index:@(selected ? 10 : 0)"
+   @ondragstart:preventDefault
+   @onmousedown="OnMouseDown"
+   @onmousemove="OnMouseMove"
+   @onmouseup="OnMouseUp"
+   @onmouseout="OnMouseOut">
+
+   @ChildContent
+
+</span>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public int startX { get; set; }
+    [Parameter]
+    public int startY { get; set; }
+
+    private ElementReference htmlTag;
+    private int posX = 0;
+    private int posY = 0;
+    private int clickOffsetX = 0;
+    private int clickOffsetY = 0;
+
+    private bool selected = false;
+    private WindowScroll scroll = new WindowScroll();
+
+    [Parameter] public Action<int, int> OnDragCallback { get; set; }
+    [Parameter] public Action<int, int> OnDragEndCallback { get; set; }
+    [Parameter] public Action<int, int> OnDragCancelCallback { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        posX = startX;
+        posY = startY;
+    }
+
+    public async Task OnMouseDown(MouseEventArgs e)
+    {
+        if (!FilterInput(e))
+            return;
+
+        var result = await JS.InvokeAsync<BoundingClientRect>("MyDOMGetBoundingClientRect", htmlTag);
+        scroll = await JS.InvokeAsync<WindowScroll>("GetScroll");
+        clickOffsetX = (int)(e.ClientX - result.Left);
+        clickOffsetY = (int)(e.ClientY - result.Top);
+
+        SetSelect(true);
+    }
+
+
+    public async Task OnMouseMove(MouseEventArgs e)
+    {
+        if (!selected)
+            return;
+
+        posX = (int)(e.ClientX) - clickOffsetX + (int)scroll.scrollX;
+        posY = (int)(e.ClientY) - clickOffsetY + (int)scroll.scrollY;
+        OnDragCallback?.Invoke(posX, posY);
+    }
+
+    public async Task OnMouseUp(MouseEventArgs e)
+    {
+        if (!FilterInput(e))
+            return;
+
+        SetSelect(false);
+        OnDragEndCallback?.Invoke(posX, posY);
+    }
+
+    public async Task OnMouseOut(MouseEventArgs e)
+    {
+        SetSelect(false);
+        OnDragCancelCallback?.Invoke(posX, posY);
+    }
+
+    private void SetSelect(bool select)
+    {
+        selected = select;
+    }
+
+    private bool FilterInput(MouseEventArgs e)
+    {
+        return e.Button == 0L;
+    }
+
+}

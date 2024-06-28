@@ -6,18 +6,15 @@
 
 <PageTitle>Index</PageTitle>
 
-<div class="PuzzleWindow bg-dark bg-gradient border-gradient"
-     style="width: @(width)px;
-           height: @(height)px;
-            ">
-@for (int r = 0; r < PuzzleDataManager.DataProvider.Rows; r++)
-{
-    @for (int c = 0; c < PuzzleDataManager.DataProvider.Columns; c++)
+<div class="PuzzleWindow bg-dark bg-gradient border-gradient" style="width: @(width)px; height: @(height)px;">
+    @for (int r = 0; r < PuzzleDataManager.DataProvider.Rows; r++)
     {
-        Models.PuzzlePiece piece = controller.GetPiece(r, c);
-        <PuzzlePiece @key="piece" PuzzleController="@controller" indexColumn="@piece.Index.column" indexRow="@piece.Index.row" imagePath="@(piece.Image)" />
+        @for (int c = 0; c < PuzzleDataManager.DataProvider.Columns; c++)
+        {
+            Models.PuzzlePiece piece = controller.GetPiece(r, c);
+            <PuzzlePiece @key="piece" PuzzleController="@controller" indexColumn="@piece.Index.column" indexRow="@piece.Index.row" imagePath="@(piece.Image)" />
+        }
     }
-}
 </div>
 
 @code{
@@ -29,17 +26,7 @@
     {
         base.OnInitialized();
 
-        const float scaleW = 1.7f;
-        const float scaleH = 2f;
-
-        // width = ((PuzzleDataManager.DataProvider.Columns + 1) * (int)((PuzzleDataManager.DataProvider.PieceWidth + PuzzleDataManager.DataProvider.Margin) * scaleW));
-        // height = ((PuzzleDataManager.DataProvider.Rows + 1) * (int)((PuzzleDataManager.DataProvider.PieceHeight + PuzzleDataManager.DataProvider.Margin) * scaleH));
         controller = new PuzzleController(PuzzleDataManager.DataProvider);
-        
-        // width = controller.GetPiece(PuzzleDataManager.DataProvider.Rows - 1, PuzzleDataManager.DataProvider.Columns - 1).Position.x + ((int)PuzzleDataManager.DataProvider.PieceWidth + PuzzleDataManager.DataProvider.Margin);
-        // height = controller.GetPiece(PuzzleDataManager.DataProvider.Rows - 1, PuzzleDataManager.DataProvider.Columns - 1).Position.y + ((int)PuzzleDataManager.DataProvider.PieceHeight + PuzzleDataManager.DataProvider.Margin);
-
-
         PuzzleDataManager.onDataProviderChange += OnPuzzleDataProviderChange;
     }
 
