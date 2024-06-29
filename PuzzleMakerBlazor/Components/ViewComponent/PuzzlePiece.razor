@@ -7,7 +7,7 @@
 @inject PuzzleDataManager PuzzleDataManager
 @implements IDisposable
 
-<Draggable OnDragCallback="@OnDrag" OnDragEndCallback="@OnDragEnd" OnDragCancelCallback="@OnDragCancel" startX="posX" startY="posY">
+<Draggable OnDragCallback="@OnDrag" OnDragEndCallback="@OnDragEnd" startX="posX" startY="posY">
     <img @ref=imageTag class="@(highlight ? "PuzzlePieceBorderHighlight" : "")" draggable="false"
          src=@(src) 
     />

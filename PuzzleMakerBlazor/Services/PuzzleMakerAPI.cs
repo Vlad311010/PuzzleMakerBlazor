@@ -25,7 +25,6 @@ namespace PuzzleMakerBlazor.Services
             using (var form = new MultipartFormDataContent())
             {
                 string fileExtension = Path.GetExtension(puzzleParameters.Image!.Name);
-                // Read the file into a memory stream
                 ByteArrayContent imageContent;
                 using (MemoryStream ms = new MemoryStream())
                 {
@@ -67,7 +66,6 @@ namespace PuzzleMakerBlazor.Services
         private static async Task<Tuple<Dictionary<string, string>, string>> ProcessZip(Stream zipStream)
         {
             using var zip = new ZipArchive(zipStream, ZipArchiveMode.Read);
-            // List<string> imagesBase64 = new List<string>();
             Dictionary<string, string> imagesBase64 = new Dictionary<string, string>();
             string puzzleDataJsonRaw = "";
             foreach (var file in zip.Entries)
@@ -77,14 +75,9 @@ namespace PuzzleMakerBlazor.Services
                     await file.Open().CopyToAsync(ms);
                     byte[] fileBytes = ms.ToArray();
                     if (Path.GetExtension(file.FullName) == ".json")
-                    {
                         puzzleDataJsonRaw = Encoding.UTF8.GetString(fileBytes);
-                    }
                     else
-                    {
                         imagesBase64.Add(file.Name.Split('.')[0], Convert.ToBase64String(fileBytes));
-                        // imagesBase64.Add(Convert.ToBase64String(fileBytes));
-                    }
                 }
             }
             return new Tuple<Dictionary<string, string>, string>(imagesBase64, puzzleDataJsonRaw);

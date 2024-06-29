@@ -194,7 +194,6 @@ namespace PuzzleMakerBlazor.Services
 
             PuzzlePiece snapToPiece = GetPiece(snapTo);
             SetPiecePosition(movedPiece, snapToPiece.Position.x + offsetX, snapToPiece.Position.y + offsetY);
-            //TODO: move connected pieces
         }
     }
 }

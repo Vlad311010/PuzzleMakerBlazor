@@ -38,7 +38,6 @@
 
     [Parameter] public Action<int, int> OnDragCallback { get; set; }
     [Parameter] public Action<int, int> OnDragEndCallback { get; set; }
-    [Parameter] public Action<int, int> OnDragCancelCallback { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -84,8 +83,6 @@
     public async Task OnMouseOut(MouseEventArgs e)
     {
         OnMouseMove(e);
-        // SetSelect(false);
-        // OnDragCancelCallback?.Invoke(posX, posY);
     }
 
     private void SetSelect(bool select)
