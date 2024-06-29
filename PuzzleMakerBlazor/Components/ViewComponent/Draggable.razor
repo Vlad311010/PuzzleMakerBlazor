@@ -57,6 +57,7 @@
         clickOffsetX = (int)(e.ClientX - result.Left);
         clickOffsetY = (int)(e.ClientY - result.Top);
 
+        await htmlTag.FocusAsync();
         SetSelect(true);
     }
 
@@ -82,8 +83,9 @@
 
     public async Task OnMouseOut(MouseEventArgs e)
     {
-        SetSelect(false);
-        OnDragCancelCallback?.Invoke(posX, posY);
+        OnMouseMove(e);
+        // SetSelect(false);
+        // OnDragCancelCallback?.Invoke(posX, posY);
     }
 
     private void SetSelect(bool select)

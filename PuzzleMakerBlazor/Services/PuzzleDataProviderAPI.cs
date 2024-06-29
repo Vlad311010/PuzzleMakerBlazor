@@ -15,23 +15,17 @@ namespace PuzzleMakerBlazor.Services
 
         public static async Task<PuzzleDataProviderAPI> CreatePuzzleDataProvider(PuzzleGenerationParameters generationParameters)
         {
-            var (imageBase64, puzzleData) = await GetPuzzleData(generationParameters);
+            PuzzleMakerResponce responce = await GetPuzzleData(generationParameters);
             PuzzleDataProviderAPI puzzleDataProvider = new PuzzleDataProviderAPI();
-            puzzleDataProvider.imagesBase64 = imageBase64;
-            puzzleDataProvider.puzzleData = puzzleData;
+            puzzleDataProvider.imagesBase64 = responce.Images;
+            puzzleDataProvider.puzzleData = responce.PuzzleData;
             puzzleDataProvider.seed = generationParameters.Seed;
             return puzzleDataProvider;
         }
 
-        private static async Task<Tuple<Dictionary<string, string>, PuzzleData>> GetPuzzleData(PuzzleGenerationParameters generationParameters)
+        private static async Task<PuzzleMakerResponce> GetPuzzleData(PuzzleGenerationParameters generationParameters)
         {
-            var (pieceImagesBase64, puzzleDataRaw) = await PuzzleMakerAPI.CreatePuzzle(generationParameters);
-            PuzzleDataIntermediate? deserializedData = JsonConvert.DeserializeObject<PuzzleDataIntermediate>(puzzleDataRaw);
-            if (deserializedData == null)
-                throw new InvalidOperationException("Given json file can't be mapped to PuzzleDataIntermediate object");
-
-
-            return new Tuple<Dictionary<string, string>, PuzzleData>(pieceImagesBase64, deserializedData.Format());
+            return await PuzzleMakerAPI.CreatePuzzle(generationParameters);
         }
 
         public int Rows => puzzleData.puzzleSize.Rows;

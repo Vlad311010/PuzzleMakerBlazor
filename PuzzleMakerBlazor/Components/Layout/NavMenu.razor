@@ -62,12 +62,21 @@
                 </p>
             </EditForm>
         </div>
-    </div>
+    </div>    
 </nav>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="text-bg-danger text-center">
+        <span class="">Error: @(errorMessage)</span>
+    </div>
+}
+
 
 <span class="@(!showPreviewImage ? "Hidden" : "")"> 
     <ImagePreview imageSrc="@Model!.Image" />
 </span>
+
 
 @code {
     [SupplyParameterFromForm]
@@ -75,6 +84,7 @@
 
     private bool showPreviewImage = false;
     private bool canInitiateRequest = true;
+    private string errorMessage = string.Empty;
 
     protected override void OnInitialized() 
     {
@@ -84,9 +94,20 @@
     private async void Submit()
     {
         canInitiateRequest = false;
-        await PuzzleManager.SwitchPuzzleDataProvider(Model!, PuzzleDataProviderAPI.CreatePuzzleDataProvider);
-        canInitiateRequest = true;
-        await InvokeAsync(StateHasChanged);
+        errorMessage = string.Empty;
+        try
+        {
+            await PuzzleManager.SwitchPuzzleDataProvider(Model!, PuzzleDataProviderAPI.CreatePuzzleDataProvider);
+        }
+        catch (HttpRequestException e)
+        {
+            errorMessage = e.Message;
+        }
+        finally
+        {
+            canInitiateRequest = true;
+            await InvokeAsync(StateHasChanged);
+        }
     }
 
     private void OnImageChange(InputFileChangeEventArgs e)

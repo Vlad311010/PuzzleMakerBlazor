@@ -69,9 +69,14 @@ h1:focus {
     filter: drop-shadow(2px 2px rgb(43, 196, 43)) drop-shadow(-2px -2px rgb(43, 196, 43));
 }
 
-.Focused {
-    z-index: 10;
+.PuzzlePiece {
+    transition: transform 0.3s ease-in-out;
 }
+
+    .PuzzlePiece:hover {
+        transform: scale(1.02);
+    }
+
 
 .Hidden {
     visibility:hidden;

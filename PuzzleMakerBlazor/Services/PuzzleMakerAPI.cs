@@ -1,4 +1,5 @@
 ﻿
+using PuzzleMakerBlazor.Models;
 using System.IO.Compression;
 using System.Net.Http.Headers;
 using System.Text;
@@ -13,9 +14,10 @@ namespace PuzzleMakerBlazor.Services
         {
             httpClient = new HttpClient { BaseAddress = new Uri("http://localhost:5000") };
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("multipart/form-data"));
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public static async Task<Tuple<Dictionary<string, string>, string>> CreatePuzzle(Models.PuzzleGenerationParameters puzzleParameters)
+        public static async Task<PuzzleMakerResponce> CreatePuzzle(PuzzleGenerationParameters puzzleParameters)
         {
             if (httpClient == null) 
                 Init();
@@ -44,9 +46,21 @@ namespace PuzzleMakerBlazor.Services
                 form.Add(content, "data");
 
                 HttpResponseMessage response = await httpClient.PostAsync("/createPuzzle", form);
-                response.EnsureSuccessStatusCode();
-                using var stream = await response.Content.ReadAsStreamAsync();
-                return await ProcessZip(stream);
+                
+                try
+                {
+                    response.EnsureSuccessStatusCode();
+                    using var stream = await response.Content.ReadAsStreamAsync();
+                    var (images, puzzleData) = await ProcessZip(stream);
+
+                    return new PuzzleMakerResponce(response.StatusCode, string.Empty, puzzleData, images);
+                }
+                catch (HttpRequestException e)
+                {
+                    Dictionary<string, string> responceContent = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();
+                    responceContent.TryGetValue("errorMessage", out string message);
+                    throw new HttpRequestException(message, e, e.StatusCode);
+                }
             }
         }
 
