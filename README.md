@@ -21,8 +21,8 @@ Frontend written in ASP.NET Core Blazor and backend in Python. The frontend and 
 - Seed: defines order in which puzzle pieces will be placed.
 
 ## Screenshots
-![Screenshot01](.\Screenshots\screenshot01.png)
+![Screenshot01](./Screenshots/screenshot01.png)
 
-![Screenshot02](.\Screenshots\screenshot02.png)
+![Screenshot02](./Screenshots/screenshot02.png)
 
-![Screenshot03](.\Screenshots\screenshot03.png)
+![Screenshot03](./Screenshots/screenshot03.png)
