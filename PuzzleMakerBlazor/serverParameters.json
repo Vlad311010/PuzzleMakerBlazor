@@ -1,0 +1,5 @@
+{
+    "puzzle_maker_module": ".\\puzzleMaker\\",
+    "save_folder": ".\\pythonServer\\generatedData\\",
+    "zip_file_name": "pieces.zip"
+}

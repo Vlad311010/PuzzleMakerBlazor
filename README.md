@@ -7,12 +7,12 @@ Frontend written in ASP.NET Core Blazor and backend in Python. The frontend and 
 ## How to use
 1. Make sure you have Python (>=3.11.3) and .NET SDK (>=8.0) installed
 2. Install required dependencies `pip install -r requirements.txt`
-3. To Run a backend execute following command from application .\PuzzleMakerBlazor folder
+3. To Run a backend execute following command from .\PuzzleMakerBlazor folder
 `python -m flask --app .\pythonServer\server.py run`
-4. In the project directory open .\PuzzleMakerBlazor and execute `dotnet run` command or use visual studio to build and run the project.
-5. Open [http://localhost:5139](http://localhost:5139) to view it in your browser.  
-6. Enter all required parameters and press 'Create' button
-7. Have fun
+1. In the project directory open .\PuzzleMakerBlazor and execute `dotnet run` command or use visual studio to build and run the project.
+2. Open [http://localhost:5139](http://localhost:5139) to view it in your browser.  
+3. Enter all required parameters and press 'Create' button
+4. Have fun
 
 ## Parameters
 - Puzzle size: the number of rows and columns into which the image will be splited.
