@@ -20,9 +20,9 @@ Frontend written in ASP.NET Core Blazor and backend in Python. The frontend and 
 - Image: image to create puzzle from.
 - Seed: defines order in which puzzle pieces will be placed.
 
-## Screenshoots
-![Screenshoot01](./src/images/screenshoot01.png)
+## Screenshots
+![Screenshot01](.\Screenshots\screenshot01.png)
 
-![Screenshoot02](./src/images/screenshoot02.png)
+![Screenshot02](.\Screenshots\screenshot02.png)
 
-![Screenshoot03](./src/images/screenshoot03.png)
+![Screenshot03](.\Screenshots\screenshot03.png)
