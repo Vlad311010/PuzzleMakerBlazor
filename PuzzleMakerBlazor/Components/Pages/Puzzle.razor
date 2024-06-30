@@ -30,6 +30,7 @@
 
         controller = new PuzzleController(PuzzleDataManager.DataProvider);
         PuzzleDataManager.onDataProviderChange += OnPuzzleDataProviderChange;
+        (width, height) = controller.GetPuzzleBoardSize();
     }
 
     private async void OnPuzzleDataProviderChange()

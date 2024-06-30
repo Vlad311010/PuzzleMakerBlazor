@@ -8,9 +8,9 @@ namespace PuzzleMakerBlazor.Services
 {
     public class PuzzleController
     {
-        private IPuzzleDataProvider puzzleData;
-        private PuzzlePiece[,] puzzlePieces;
-        private List<List<PieceIndex>> ConnectedPieces;
+        private IPuzzleDataProvider puzzleData = default!;
+        private PuzzlePiece[,] puzzlePieces = default!;
+        private List<List<PieceIndex>> ConnectedPieces = default!;
 
         private const int startOffsetX = 70;
         private const int startOffsetY = 110;
@@ -174,11 +174,11 @@ namespace PuzzleMakerBlazor.Services
             }
             else if (connected1.Count > 0)
             {
-                ConnectedPieces.Find(e => e.Contains(pieceIdx1)).Add(pieceIdx2);
+                ConnectedPieces.Find(e => e.Contains(pieceIdx1))?.Add(pieceIdx2);
             }
             else if (connected2.Count > 0)
             {
-                ConnectedPieces.Find(e => e.Contains(pieceIdx2)).Add(pieceIdx1);
+                ConnectedPieces.Find(e => e.Contains(pieceIdx2))?.Add(pieceIdx1);
             }
             else
             {

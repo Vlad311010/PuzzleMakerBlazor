@@ -4,8 +4,8 @@ namespace PuzzleMakerBlazor.Models
 {
     public class PuzzleDataIntermediate
     {
-        public Dictionary<string, int> puzzleSize { get; set; }
-        public Dictionary<string, float> pieceSize { get; set; }
+        public Dictionary<string, int> puzzleSize { get; set; } = default!;
+        public Dictionary<string, float> pieceSize { get; set; } = default!;
         public int margin { get; set; }
         public Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<string, float>>>> pieces { get; set; }
 
@@ -25,7 +25,7 @@ namespace PuzzleMakerBlazor.Models
                 for (int x = 0; x < columns; x++)
                 {
                     pieceDatas[x, y] = new PieceData() { index = new ValueTuple<int, int>(x, y), joints = new List<JointData>() };
-                    Dictionary<string, Dictionary<string, float>> joints = pieces[string.Format("{0}_{1}", y, x)]["joints"]; // TODO: change key [r,c] order
+                    Dictionary<string, Dictionary<string, float>> joints = pieces[string.Format("{0}_{1}", y, x)]["joints"];
                     foreach (KeyValuePair<string, Dictionary<string, float>> entry in joints)
                     {
                         pieceDatas[x, y].joints.Add(new JointData 
@@ -69,11 +69,6 @@ namespace PuzzleMakerBlazor.Models
             this.margin = margin;
             this.pieces = pieces;
         }
-
-        /*public JointData GetJoint(PieceIndex from, PieceIndex to)
-        {
-            return pieces[from.column, from.row].joints.Where(j => j.connectTo.Equals(to)).Single();
-        }*/
 
     }
 }

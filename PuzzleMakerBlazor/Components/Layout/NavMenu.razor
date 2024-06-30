@@ -50,14 +50,15 @@
                             @if (canInitiateRequest) 
                             {
                                 <button class="btn btn-outline-success h-100 me-2" type="submit" style="width:37%">Create</button>
+                                <span @onclick="OnReset" autocomplete="off" class="btn btn-outline-warning">Reset</span>
                             }
                             else
                             {
                                 <button class="btn btn-outline-success h-100 me-2 disabled" type="submit" style="width:37%">
                                 <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                                 </button>
+                                <span @onclick="OnReset" autocomplete="off" class="btn btn-outline-warning disabled">Reset</span>
                             }
-                            <span @onclick="OnReset" autocomplete="off" class="btn btn-outline-warning">Reset</span>
                         </span>
                 </p>
             </EditForm>

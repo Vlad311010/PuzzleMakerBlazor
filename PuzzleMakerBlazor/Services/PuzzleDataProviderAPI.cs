@@ -7,8 +7,8 @@ namespace PuzzleMakerBlazor.Services
 {
     public class PuzzleDataProviderAPI : IPuzzleDataProvider
     {
-        private Dictionary<string, string> imagesBase64;
-        private PuzzleData puzzleData;
+        private Dictionary<string, string> imagesBase64 = default!;
+        private PuzzleData puzzleData = default!;
         private int seed = 0;
 
         private PuzzleDataProviderAPI() { }
