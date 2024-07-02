@@ -53,13 +53,9 @@ h1:focus {
 .Dragable {
     display: inline;
     position: absolute;
-    cursor: default !important;
     pointer-events: visible;
 }
 
-    .Dragable:active {
-        cursor: move !important;
-    }
 
 * {
     user-select: none;

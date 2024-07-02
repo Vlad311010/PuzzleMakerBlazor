@@ -2,13 +2,12 @@
 @using Microsoft.Extensions.Logging
 @using PuzzleMakerBlazor.Models
 @using System.ComponentModel
-@inject ILogger<PuzzlePiece> _logger
 @inject IJSRuntime JS
 @inject PuzzleDataManager PuzzleDataManager
 @implements IDisposable
 
-<Draggable OnDragCallback="@OnDrag" OnDragEndCallback="@OnDragEnd" startX="posX" startY="posY">
-    <img @ref=imageTag class="@(highlight ? "PuzzlePieceBorderHighlight" : "")" draggable="false"
+<Draggable OnDragCallback="@OnDrag" OnDragEndCallback="@OnDragEnd" startX="posX" startY="posY" >
+    <img @ref=imageTag class="@(highlight ? "PuzzlePieceBorderHighlight" : "")" draggable="true"
          src=@(src) 
     />
 </Draggable>

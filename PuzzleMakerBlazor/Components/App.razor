@@ -12,6 +12,17 @@
     <link rel="icon" type="image/png" href="favicon.png" />
     <script>MyDOMGetBoundingClientRect = (element, parm) => { return element.getBoundingClientRect(); };</script>
     <script>GetScroll = (parm) => { return { scrollX: window.scrollX, scrollY: window.scrollY } };</script>
+    <script>SetEmptyDragImage = () => {
+                document.addEventListener('dragstart', function (event) 
+                {
+                    event.dataTransfer.effectAllowed = "move";
+                    var img = new Image();
+                    img.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+                    event.dataTransfer.setDragImage(img, 0, 0);
+                }, false);
+            }
+    </script>
+
     <HeadOutlet />
 </head>
 

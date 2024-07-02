@@ -3,6 +3,7 @@
 @using Models
 @using System.ComponentModel
 @inject PuzzleDataManager PuzzleDataManager
+@inject IJSRuntime JS
 
 <PageTitle>Index</PageTitle>
 
@@ -24,6 +25,7 @@
     int height;
     PuzzleController controller;
 
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -31,6 +33,12 @@
         controller = new PuzzleController(PuzzleDataManager.DataProvider);
         PuzzleDataManager.onDataProviderChange += OnPuzzleDataProviderChange;
         (width, height) = controller.GetPuzzleBoardSize();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await JS.InvokeVoidAsync("SetEmptyDragImage");
     }
 
     private async void OnPuzzleDataProviderChange()
